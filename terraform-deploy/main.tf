@@ -2,7 +2,7 @@ terraform {
   required_providers {
     zeet = {
       source  = "zeet-dev/zeet"
-      version = "0.0.5"
+      version = "1.0.0"
     }
   }
 }
@@ -53,6 +53,7 @@ resource "zeet_project" "terraform" {
             awsAccountId = var.aws_account_id,
             region       = var.region,
             bucketName   = format("zeet-tf-%s-%s", var.aws_account_id, var.region),
+            key          = "cluster.tfstate",
           }
         },
         provider = {
@@ -61,18 +62,25 @@ resource "zeet_project" "terraform" {
         }
       },
       blueprint = {
-        moduleSource = {
-          source = "https://github.com/zeet-demo/terraform-test"
-        }
+        source = {
+          terraformModule = {
+            source = "https://github.com/zeet-demo/terraform-test"
+          },
+        },
       },
-      variables = jsonencode([
-        { name = "min", value = "0" },
-        { name = "max", value = "100" },
-      ])
     })
+    variables = jsonencode([
+      { name = "min", value = "0", type = "INTEGER" },
+      { name = "max", value = "100", type = "INTEGER" },
+    ])
   }]
 
   workflow = {
     steps = jsonencode([{ action = "ORCHESTRATION_DEPLOY" }])
   }
+}
+
+output "project_id" {
+  description = "value of the project_id used in apiv1"
+  value       = zeet_project.terraform.id
 }

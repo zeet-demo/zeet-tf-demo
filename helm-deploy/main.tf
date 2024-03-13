@@ -2,7 +2,7 @@ terraform {
   required_providers {
     zeet = {
       source  = "zeet-dev/zeet"
-      version = "0.0.5"
+      version = "1.0.0"
     }
   }
 }
@@ -30,12 +30,12 @@ data "zeet_blueprint" "helm" {
   slug = "helm-chart"
 }
 
-resource "zeet_project" "terraform" {
+resource "zeet_project" "helm" {
   team_id     = var.team_id
   group_id    = zeet_group.group.id
   subgroup_id = zeet_group_subgroup.subgroup.id
 
-  name         = "my-terraform"
+  name         = "my-helm"
   blueprint_id = data.zeet_blueprint.helm.id
   enabled      = false // draft mode
 
@@ -63,3 +63,7 @@ resource "zeet_project" "terraform" {
   }
 }
 
+output "project_id" {
+  description = "value of the project_id used in apiv1"
+  value = zeet_project.helm.id
+}
