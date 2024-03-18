@@ -7,6 +7,15 @@ terraform {
   }
 }
 
+provider "zeet" {
+  token = var.zeet_token
+}
+
+variable "zeet_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "team_id" {
   type = string
 }
@@ -72,10 +81,10 @@ resource "zeet_project" "container" {
 
 output "project_id" {
   description = "value of the project_id used in apiv1"
-  value = zeet_project.container.id
+  value       = zeet_project.container.id
 }
 
 output "repo_id" {
   description = "value of the repo_id used in apiv0"
-  value = zeet_project.container.container.repo_id
+  value       = zeet_project.container.container.repo_id
 }
